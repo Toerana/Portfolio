@@ -1,0 +1,68 @@
+<!-- home.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        // Function to reload the values list every 0.5 seconds
+        function autoRefresh() {
+            setInterval(function(){
+                // Use jQuery to load the updated values list
+                $("#valuesList").load("{% url 'home' %} #valuesList");
+            }, 1000);  // 500 milliseconds = 0.5 seconds
+        }
+
+        // Call the autoRefresh function when the page loads
+        $(document).ready(function() {
+            autoRefresh();
+        });
+    </script>
+</head>
+<body>
+    <h1>Welcome to the Home Page!</h1>
+    <a href="{% url 'logout_view' %}">Logout</a>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h2> liste des prises</h2>
+    <ul id="valuesList">
+
+        {% for value in values_list %}
+            <li   >
+                {{ value.prise }} - Etat: {{ value.etat|yesno:"On,Off" }}
+                {% if value.etat == 1 %}
+                <button type="reset" onclick="location.href='/SAE_App/changestate/{{value.id}}'">
+                    éteindre
+                </button>
+
+                {% elif value.etat == 0 %}
+                <button type="reset" onclick="location.href='/SAE_App/changestate/{{value.id}}'">
+                    allumer
+                </button>
+
+                {% endif %}
+            </li>
+        {% endfor %}
+    <br>
+    <br>
+    <br>
+    <br>
+
+    </ul>   
+    <h2>Actionner TOUTES les prises</h2>
+    <UL>
+    <button type="reset" onclick="location.href='/SAE_App/changestate_all/1'">
+        allumer
+    </button>
+
+    <button type="reset" onclick="location.href='/SAE_App/changestate_all/0'">
+        éteindre
+    </button>
+    </UL>
+</body>
+</html>
