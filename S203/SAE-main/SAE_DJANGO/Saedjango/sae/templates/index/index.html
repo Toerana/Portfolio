@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <title>index</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <div class="navbar">
+    <a href="AppDispo/createAD/">Ajouter une Aplication</a>
+    <a href="AppCours/createAC/">Lancer une application</a>
+    <a href="Serveur/createS/">Ajout de Serveur</a>
+    <a href="ServiceCours/createSC/">Lancer un service</a>
+    <a href="ServiceDispo/createSD/">Ajouter un Service</a>
+    <a href="TypeServeur/createTS/">Ajouter un Type de Serveur</a>
+    <a href="Utilisateur/createU/">Ajouter un utilisateur</a>
+  </div>
+
+  <div class="content">
+    <div class="table-container">
+      <h2>Application disponible</h2>
+      <ol>
+        {% for l in liste %}
+            <div class="block">
+              <div class="item-content">
+              <p><strong>Nom:</strong> {{ l.nom }}</p>
+              </div>
+              <div class="item-buttons">
+                <a href="AppDispo/updateAD/{{ l.id }}/">Mise à jour</a>
+                <a href="AppDispo/deleteAD/{{ l.id }}/">Supprimer</a>
+              </div>
+            </div>
+        {% endfor %}
+
+      </ol>
+    </div>
+
+    <div class="table-container">
+      <h2>Applications en cours</h2>
+      <ol>
+        {% for l in liste2 %}
+            <div class="block">
+              <div class="item-content">
+              <p><strong>Nom:</strong> {{ l.id_app }}</p>
+              <p><strong>Serveur:</strong> {{ l.id_serveur }}</p>
+              <p><strong>Utilisateur:</strong> {{ l.id_utilisateur }}</p>
+              </div>
+              <div class="item-buttons">
+                <a href="AppCours/updateAC/{{ l.id }}/">Mise à jour</a>
+                <a href="AppCours/deleteAC/{{ l.id }}/">Supprimer</a>
+              </div>
+            </div>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="table-container">
+      <h2>Serveurs en cours</h2>
+      <ol>
+        {% for l in liste3 %}
+            <div class="block">
+              <div class="item-content">
+              <p><strong>Nom:</strong> {{ l.nom }}</p>
+              <p><strong>Type:</strong> {{ l.id_type }}</p>
+              <p><strong>Nombre de coeur:</strong> {{ l.nombre_processeur }}</p>
+              <p><strong>Memoire:</strong> {{ l.memoire }} Mo</p>
+              <p><strong>Stockage:</strong> {{ l.stockage }} Go</p>
+              </div>
+              <div class="item-buttons">
+                <a href="Serveur/updateS/{{ l.id }}/">Mise à jour</a>
+                <a href="Serveur/deleteS/{{ l.id }}/">Supprimer</a>
+                <a href="{% url 'fiche_pdf' serveur_id=l.id %}">Fiche des services</a>
+              </div>
+            </div>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="table-container">
+      <h2>Services en cours</h2>
+      <ol>
+        {% for l in liste4 %}
+            <div class="block">
+              <div class="item-content">
+              <p><strong>Nom:</strong> {{ l.id_service }}</p>
+              <p><strong>Serveur:</strong> {{ l.id_serveur }}</p>
+              <p><strong>Date de lancement:</strong> {{ l.date_lancement }}</p>
+              <p><strong>Memoire utiliser:</strong> {{ l.memoire_utiliser }} Mo</p>
+              </div>
+              <div class="item-buttons">
+                <a href="ServiceCours/updateSC/{{ l.id }}/">Mise à jour</a>
+                <a href="ServiceCours/deleteSC/{{ l.id }}/">Supprimer</a>
+              </div>
+            </div>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="table-container">
+      <h2>Services Disponible</h2>
+      <ol>
+        {% for l in liste5 %}
+            <div class="block">
+              <div class="item-content">
+              <p><strong>Nom:</strong> {{ l.nom }}</p>
+              <p><strong>Memoire necessaire:</strong> {{ l.memoire_necessaire }} Mo</p>
+              </div>
+              <div class="item-buttons">
+                <a href="ServiceDispo/updateSD/{{ l.id }}/">Mise à jour</a>
+                <a href="ServiceDispo/deleteSD/{{ l.id }}/">Supprimer</a>
+              </div>
+            </div>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="table-container">
+      <h2>Types de Serveur</h2>
+      <ol>
+        {% for l in liste6 %}
+            <div class="block">
+              <div class="item-content">
+              <p><strong>Nom:</strong> {{ l.type_serveur }}</p>
+              <p><strong>Descritpion:</strong> {{ l.descript }}</p>
+              </div>
+              <div class="item-buttons">
+                <a href="TypeServeur/updateTS/{{ l.id }}/">Mise à jour</a>
+                <a href="TypeServeur/deleteTS/{{ l.id }}/">Supprimer</a>
+              </div>
+            </div>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="table-container">
+      <h2>Utilisateurs</h2>
+      <ol>
+        {% for l in liste7 %}
+            <div class="block">
+              <div class="item-content">
+              <p><strong>Nom:</strong> {{ l.nom }}</p>
+              <p><strong>Prenom:</strong> {{ l.prenom }}</p>
+              <p><strong>Mail:</strong> {{ l.mail }}</p>
+              </div>
+              <div class="item-buttons">
+                <a href="Utilisateur/updateU/{{ l.id }}/">Mise à jour</a>
+                <a href="Utilisateur/deleteU/{{ l.id }}/">Supprimer</a>
+              </div>
+            </div>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+</body>
+</html>

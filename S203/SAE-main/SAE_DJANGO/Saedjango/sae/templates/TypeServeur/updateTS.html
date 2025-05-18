@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <title>Maj type serveur</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <form method="post" action="/sae/TypeServeur/traitementupdateTS/{{id}}">
+    {% csrf_token %}
+    {{ form.as_ul }}
+      <input type="submit" value="envoyer les données"\>
+  </form>
+<div class="item-buttons">
+<a href="/sae">Retour</a>
+</div>
+</html>
