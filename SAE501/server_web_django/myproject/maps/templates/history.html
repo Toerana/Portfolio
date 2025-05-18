@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location History</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+        }
+        #history-container {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        #history-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        #history-list li {
+            margin: 5px 0;
+        }
+        #map-container {
+            flex: 1;
+            padding: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="history-container">
+        <h1>Location History</h1>
+        <button><a href="/">Back to Map</a></button>
+        <br>
+        <ul id="history-list"></ul>
+        <div>
+            <button onclick="setLimit(20)">Show 20</button>
+            <button onclick="setLimit(100)">Show 100</button>
+            <button onclick="setLimit('all')">Show All</button>
+        </div>
+    </div>
+    <div id="map-container" class="hidden">
+        <iframe id="mapFrame" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <p>Address: <span id="address">No address selected</span></p>
+        <label for="NerdStatButton">display nerd stats</label>
+        <input type="checkbox" id="NerdStatCheck" unchecked>
+        <div id="NerdStatsDiv">
+            <p>full timestamp: <span id="FullTimeStamp">Loading...</span></p>
+        </div>
+    </div>
+
+    <script>
+        let limit = '20';
+        let lastTimestamp = null;
+
+        function setLimit(newLimit) {
+            limit = newLimit;
+            fetchHistory(true);
+        }
+
+        async function getAddress(lat, lng) {
+            const response = await fetch(`/api/address?lat=${lat}&lng=${lng}`);
+            const data = await response.json();
+            return data.address || "No valid address nearby";
+        }
+
+        function fetchHistory(fullUpdate = false) {
+            fetch('/api/history/')
+            .then(response => response.json())
+            .then(async data => {
+                const historyList = document.getElementById("history-list");
+
+                if (fullUpdate) {
+                    historyList.innerHTML = ""; // Clear existing list
+
+                    let limitedData = data;
+                    if (limit !== 'all') {
+                        limitedData = data.slice(0, limit);
+                    }
+
+                    for (const location of limitedData) {
+                        addHistoryEntry(location, historyList);
+                    }
+
+                    if (data.length > 0) {
+                        lastTimestamp = data[0].timestamp;
+                    }
+                } else {
+                    if (data.length > 0 && data[0].timestamp !== lastTimestamp) {
+                        addHistoryEntry(data[0], historyList, true);
+                        lastTimestamp = data[0].timestamp;
+                    }
+                }
+            })
+            .catch(error => console.error("Error fetching history:", error));
+        }
+
+        function addHistoryEntry(location, historyList, prepend = false) {
+            // Check if entry already exists
+            const existingEntries = historyList.getElementsByTagName("li");
+            for (let entry of existingEntries) {
+                if (entry.dataset.timestamp === location.timestamp.toString()) {
+                    return; // Skip if duplicate
+                }
+            }
+
+            const listItem = document.createElement("li");
+            const date = new Date(location.timestamp);
+            const formattedDate = date.toLocaleDateString('en-GB');
+            const formattedTime = date.toLocaleTimeString('en-GB', { hour12: false });
+            listItem.textContent = `📍 ${formattedDate} ${formattedTime}`;
+            listItem.style.cursor = "pointer";
+            listItem.dataset.timestamp = location.timestamp; 
+
+            listItem.onclick = async function() {
+                updateMap(location.lat, location.lng);
+                const address = await getAddress(location.lat, location.lng);
+                document.getElementById("address").textContent = address;
+                document.getElementById("map-container").classList.remove("hidden");
+                document.getElementById("FullTimeStamp").textContent = formatFullTimestamp(location.timestamp);
+            };
+
+            if (prepend) {
+                historyList.insertBefore(listItem, historyList.firstChild);
+            } else {
+                historyList.appendChild(listItem);
+            }
+        }
+
+        function updateMap(lat, lng) {
+            const googleMapsURL = `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
+            document.getElementById('mapFrame').src = googleMapsURL;
+        }
+
+        function formatFullTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toISOString();
+        }
+        function showNerdStats(){
+            var x = document.getElementById("NerdStatsDiv");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+        fetchHistory(true);  
+        setInterval(fetchHistory, 1000);
+        document.getElementById("NerdStatsDiv").style.display = "none";
+        document.getElementById("NerdStatCheck").addEventListener("click", showNerdStats);
+    </script>
+</body>
+</html>

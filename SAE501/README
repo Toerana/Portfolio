@@ -1,0 +1,68 @@
+# Live GPS Tracker
+
+Welcome to the Live GPS Tracker project! This project is designed to track GPS coordinates in real-time and display them on a web interface. It also provides a history of the tracked locations.
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [MQTT Configuration](#mqtt-configuration)
+- [API Endpoints](#api-endpoints)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Introduction
+
+The Live GPS Tracker project is built using Django for the backend and MQTT for real-time communication. It allows you to track GPS coordinates and view them on a map. The project also includes a history feature to view past locations.
+
+## Features
+
+- Real-time GPS tracking
+- Display current location on a map
+- View location history
+- Fetch address details for coordinates
+- MQTT integration for real-time updates
+
+## Installation
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/yourusername/live-gps-tracker.git
+    cd live-gps-tracker
+    ```
+
+2. Create a virtual environment and activate it:
+    ```sh
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. Install the required packages:
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+4. Apply the migrations:
+    ```sh
+    python manage.py migrate
+    ```
+
+5. Start the Django development server:
+    ```sh
+    python manage.py runserver
+    ```
+
+## Usage
+
+1. Open your web browser and navigate to [http://127.0.0.1:8000/](http://_vscodecontentref_/0) to view the live GPS tracker.
+2. To view the location history, navigate to [http://127.0.0.1:8000/history/](http://_vscodecontentref_/1).
+
+## MQTT Configuration
+
+The project uses MQTT for real-time communication. The MQTT client is configured in the [mqtt_client.py](http://_vscodecontentref_/2) file. You can change the MQTT broker and topic as needed.
+
+```python
+MQTT_BROKER = "test.mosquitto.org"  # Change for production
+MQTT_TOPIC = "gps/coordinates"      # Set the topic
